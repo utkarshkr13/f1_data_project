@@ -7,7 +7,6 @@
       type="text/css"
       href="{{ url_for('static', filename='style.css') }}"
     />
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </head>
   <body>
     <div class="loading-screen" id="loading-screen">
@@ -32,7 +31,35 @@
 
       {% if race_name and date %}
       <h2>{{ race_name }} on {{ date }}</h2>
-      {% for table in tables %} {{ table|safe }} {% endfor %} {% endif %}
+      {% for table in tables %}
+      <table>
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Driver</th>
+            <th>Constructor</th>
+            <th>Grid</th>
+            <th>Laps</th>
+            <th>Status</th>
+            <th>Time</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ table|safe }}
+        </tbody>
+      </table>
+      {% endfor %} {% endif %}
     </div>
+
+    <!-- Custom F1 Car Cursor -->
+    <img
+      src="{{ url_for('static', filename='f1_car.png') }}"
+      alt="F1 Car"
+      class="f1-car"
+    />
+
+    <!-- JavaScript file -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </body>
 </html>
