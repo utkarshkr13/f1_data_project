@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F1 Race Results</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>{{ race_name }}</h1>
+        <p>Race Date: {{ date }}</p>
+      </header>
+      <section>{% for table in tables %} {{ table|safe }} {% endfor %}</section>
+    </div>
+  </body>
+</html>
