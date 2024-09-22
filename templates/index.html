@@ -1,39 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+  <head>
     <title>F1 Race Results</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>F1 Race Results</h1>
-            <form method="POST">
-                <label for="season">Select Season:</label>
-                <select name="season" id="season" onchange="this.form.submit()">
-                    {% for season in season_options %}
-                        <option value="{{ season }}" {% if season == selected_season %}selected{% endif %}>{{ season }}</option>
-                    {% endfor %}
-                </select>
-                <label for="round">Select Race:</label>
-                <select name="round" id="round">
-                    {% for round, race_name in race_options %}
-                        <option value="{{ round }}" {% if round == selected_round %}selected{% endif %}>{{ race_name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit">Show Results</button>
-            </form>
-        </header>
-        <section>
-            {% if race_name and date %}
-                <h2>{{ race_name }} on {{ date }}</h2>
-                {% for table in tables %}
-                    {{ table|safe }}
-                {% endfor %}
-            {% endif %}
-        </section>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </head>
+  <body>
+    <div class="loading-screen" id="loading-screen">
+      <div class="f1-loader"></div>
     </div>
-</body>
+
+    <div class="container" id="content" style="display: none">
+      <header>
+        <h1>F1 Race Results</h1>
+        <form method="post">
+          <label for="race">Select a race:</label>
+          <div class="select-container">
+            <select name="race" id="race">
+              {% for round, race_name in races %}
+              <option value="{{ round }}">{{ race_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="animated-button">Show Results</button>
+        </form>
+      </header>
+
+      {% if race_name and date %}
+      <h2>{{ race_name }} on {{ date }}</h2>
+      {% for table in tables %} {{ table|safe }} {% endfor %} {% endif %}
+    </div>
+  </body>
 </html>
