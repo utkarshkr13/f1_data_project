@@ -9,6 +9,9 @@
     />
   </head>
   <body>
+    <!-- WebGL Canvas for Background Rendering -->
+    <canvas id="webgl-canvas"></canvas>
+
     <div class="loading-screen" id="loading-screen">
       <div class="f1-loader"></div>
     </div>
@@ -59,7 +62,9 @@
       class="f1-car"
     />
 
-    <!-- JavaScript file -->
+    <!-- JavaScript files -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='webgl-background.js') }}"></script>
+    <!-- WebGL script -->
   </body>
 </html>

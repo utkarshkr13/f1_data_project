@@ -158,3 +158,23 @@ body {
     padding: 8px;
   }
 }
+/* Ensure the canvas covers the whole page */
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Push behind the content */
+}
+
+/* Other styles remain unchanged */
+
+/* Reset and background animation */
+body {
+  font-family: "Roboto", sans-serif;
+  background: none; /* Remove the gradient background */
+  color: #f5f5f7;
+  line-height: 1.6;
+  padding: 20px;
+}
