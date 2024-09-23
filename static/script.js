@@ -77,4 +77,18 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+  // Add ripple effect to header on hover
+  const header = document.querySelector("header");
+  header.addEventListener("mousemove", function (e) {
+    const ripple = document.createElement("span");
+    ripple.classList.add("ripple");
+    const rect = header.getBoundingClientRect();
+    ripple.style.left = `${e.clientX - rect.left - ripple.offsetWidth / 2}px`;
+    ripple.style.top = `${e.clientY - rect.top - ripple.offsetHeight / 2}px`;
+    header.appendChild(ripple);
+
+    ripple.addEventListener("animationend", () => {
+      ripple.remove();
+    });
+  });
 });
