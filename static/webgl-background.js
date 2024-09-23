@@ -1,10 +1,7 @@
-let canvas, gl;
+let canvas, gl, program;
 
 function initWebGL() {
-  // Select the canvas from the HTML document
   canvas = document.getElementById("webgl-canvas");
-
-  // Initialize WebGL context
   gl = canvas.getContext("webgl");
 
   if (!gl) {
@@ -17,29 +14,93 @@ function initWebGL() {
     return;
   }
 
-  // Set canvas size
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
 
-  // Start rendering
+  initShaders();
   render();
 }
 
 function resizeCanvas() {
-  // Ensure the canvas always covers the entire viewport
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
-function render() {
-  // Set background color and clear the canvas
-  gl.clearColor(0.1, 0.1, 0.1, 1.0); // Dark background color
-  gl.clear(gl.COLOR_BUFFER_BIT);
+function initShaders() {
+  const vertexShaderSource = `
+        attribute vec2 a_position;
+        void main() {
+            gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+    `;
 
-  // Keep rendering in a loop
+  const fragmentShaderSource = `
+        precision mediump float;
+        uniform vec2 u_resolution;
+        void main() {
+            vec2 st = gl_FragCoord.xy / u_resolution;
+            vec3 color1 = vec3(0.0, 0.5, 1.0); // Start color (blue)
+            vec3 color2 = vec3(1.0, 0.0, 0.5); // End color (pink)
+            float radius = 0.5;
+            float dist = distance(st, vec2(0.5, 0.5));
+            float t = smoothstep(0.0, radius, dist);
+            vec3 color = mix(color1, color2, t);
+            gl_FragColor = vec4(color, 1.0);
+        }
+    `;
+
+  const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+  const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+  program = createProgram(vertexShader, fragmentShader);
+
+  const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+  const resolutionUniformLocation = gl.getUniformLocation(
+    program,
+    "u_resolution"
+  );
+
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  const positions = [-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1];
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+  gl.useProgram(program);
+  gl.enableVertexAttribArray(positionAttributeLocation);
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+}
+
+function createShader(type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(shader));
+    gl.deleteShader(shader);
+    return null;
+  }
+  return shader;
+}
+
+function createProgram(vertexShader, fragmentShader) {
+  const program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(program));
+    gl.deleteProgram(program);
+    return null;
+  }
+  return program;
+}
+
+function render() {
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
   requestAnimationFrame(render);
 }
 
-// Initialize WebGL once the DOM is ready
 document.addEventListener("DOMContentLoaded", initWebGL);

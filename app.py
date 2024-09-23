@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    season = 2023
+    season = 2024
     races = fetch_all_races(season)
     selected_race = None
     race_name = None
